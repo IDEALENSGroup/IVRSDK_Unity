@@ -1,0 +1,6 @@
+{
+	"Config": [{
+		"OpenFPS": "1",
+		"OpenLog": "1"
+	}]
+}
