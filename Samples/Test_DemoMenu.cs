@@ -84,12 +84,12 @@ namespace IDEALENS.IVR.Example
 
 		public void ShowAndroidSystemToast()
 		{
-			IVRManager.ShowToast ("ShowToast");
+			IVRPlugin.ShowToast ("ShowToast");
 		}
 
 		public void ShowAndroidSystemDialog()
 		{
-			IVRManager.ShowDialog ("Android Dialog","Msg Here","Sure",()=>{
+			IVRPlugin.ShowDialog ("Android Dialog","Msg Here","Sure",()=>{
 				Debug.Log("Show Dialog");
 			});
 		}

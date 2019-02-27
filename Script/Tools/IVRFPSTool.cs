@@ -15,7 +15,9 @@ namespace IDEALENS.IVR.Tool
     {
 
 
-        private Text label;
+		public Text label_fps;
+		public Text _orientationText;
+		public Text _positionText;
 
 		private float _framesPerSecond = 0;
 
@@ -23,11 +25,6 @@ namespace IDEALENS.IVR.Tool
         // Use this for initialization
         void Start()
         {
-            label = GetComponent<Text>();
-            if (label == null)
-            {
-                label = gameObject.AddComponent<Text>();
-            }
 
 			svrManager = SvrManager.Instance;
 			Debug.Assert(svrManager != null, "SvrManager object not found");
@@ -44,12 +41,34 @@ namespace IDEALENS.IVR.Tool
 
 		void LateUpdate()
 		{
-			if (label != null && label.isActiveAndEnabled)
+			if (svrManager == null)
+				return;
+
+			var headTransform = svrManager.head;
+
+			//transform.position = headTransform.position;
+			//transform.rotation = headTransform.rotation;
+
+			Quaternion orientation = headTransform.localRotation;
+			if (_orientationText != null && _orientationText.isActiveAndEnabled)
+			{
+				_orientationText.text = string.Format("{0:F2}, {1:F2}, {2:F2}, {3:F2}", orientation.x, orientation.y, orientation.z, orientation.w);
+				_orientationText.color = (svrManager.status.pose & (int)SvrPlugin.TrackingMode.kTrackingOrientation) == 0 ? Color.red : Color.green;
+			}
+
+			Vector3 position = headTransform.localPosition;
+			if (_positionText != null && _positionText.isActiveAndEnabled)
+			{
+				_positionText.text = string.Format("{0:F2}, {1:F2}, {2:F2}", position.x, position.y, position.z);
+				_positionText.color = (svrManager.status.pose & (int)SvrPlugin.TrackingMode.kTrackingPosition) == 0 && svrManager.settings.trackPosition && (SvrPlugin.Instance.GetTrackingMode() & (int)SvrPlugin.TrackingMode.kTrackingPosition) != 0 ? Color.red : Color.green;
+			}
+
+			if (label_fps != null && label_fps.isActiveAndEnabled)
 			{
 				int fps = Mathf.RoundToInt(_framesPerSecond);
-				int refreshRate = Mathf.RoundToInt(IVRManager.Instance.GetDeviceInfo_DisplayRefreshRateHz());
-				label.text = string.Format("{0} / {1} FPS", fps, refreshRate);
-				label.color = fps < refreshRate ? Color.yellow : Color.green;
+				int refreshRate = Mathf.RoundToInt(IVRPlugin.GetDeviceInfo_DisplayRefreshRateHz());
+				label_fps.text = string.Format("{0} / {1} FPS", fps, refreshRate);
+				label_fps.color = fps < refreshRate ? Color.yellow : Color.green;
 			}
 		}
 

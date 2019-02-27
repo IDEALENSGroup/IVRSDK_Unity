@@ -71,6 +71,8 @@ namespace IDEALENS.IVR
 				transform.parent.position - (transform.position - transform.up * transform.localScale.y / 2));
 
 			mMoveLenght = transform.localPosition.z;
+
+			overridePointerCamera = IVRManager.Instance.monoCamera;
 		}
 		public void Hide()
 		{

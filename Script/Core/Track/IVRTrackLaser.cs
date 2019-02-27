@@ -133,6 +133,7 @@ namespace IDEALENS.IVR
 		}
 		void OnEnable()
 		{
+			overridePointerCamera = IVRManager.Instance.monoCamera;
 		}
 		void CreatHandeModel()
 		{

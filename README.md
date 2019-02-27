@@ -1,2 +1,0 @@
-# IVRSDK
-VR SDK

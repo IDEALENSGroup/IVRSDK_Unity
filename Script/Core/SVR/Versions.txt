@@ -1,0 +1,2 @@
+SnapdragonVR: 3.0.0
+Unity Editor: 5.4 thru 2018.1

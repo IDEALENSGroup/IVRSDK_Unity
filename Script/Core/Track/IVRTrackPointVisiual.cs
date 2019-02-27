@@ -26,9 +26,9 @@ namespace IDEALENS.IVR
 		}
 		void OnEnable()
 		{
-			IVRManager.mHandRecentPressDown   += IVRSpace_mHandRecentPressDown;
-			IVRManager.mHandRecentPressing    += IVRSpace_mHandRecentPressing;
-			IVRManager.mHandRecentPressUp     += IVRSpace_mHandRecentPressUp;
+			IVRBridge.mHandRecentPressDown   += IVRSpace_mHandRecentPressDown;
+			IVRBridge.mHandRecentPressing    += IVRSpace_mHandRecentPressing;
+			IVRBridge.mHandRecentPressUp     += IVRSpace_mHandRecentPressUp;
 		}
 
 
@@ -71,9 +71,9 @@ namespace IDEALENS.IVR
 		}
 		void OnDisable()
 		{
-			IVRManager.mHandRecentPressDown   -= IVRSpace_mHandRecentPressDown;
-			IVRManager.mHandRecentPressing    -= IVRSpace_mHandRecentPressing;
-			IVRManager.mHandRecentPressUp     -= IVRSpace_mHandRecentPressUp;
+			IVRBridge.mHandRecentPressDown   -= IVRSpace_mHandRecentPressDown;
+			IVRBridge.mHandRecentPressing    -= IVRSpace_mHandRecentPressing;
+			IVRBridge.mHandRecentPressUp     -= IVRSpace_mHandRecentPressUp;
 		}
 
 		void OnPressDown(ControllerButton type)
