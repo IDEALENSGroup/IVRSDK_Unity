@@ -79,8 +79,8 @@ namespace IDEALENS.IVR
 		// Update is called once per frame
 		void Update()
 		{
-			displayState.homeButton = IVRInput.Get(IVRInput.Button.Back);
-			displayState.appButton = IVRInput.Get(IVRInput.Button.Two);
+			displayState.homeButton = IVRInput.Get(IVRInput.Button.Two);
+			displayState.appButton = IVRInput.Get(IVRInput.Button.Back);
 			displayState.clickButton = IVRInput.Get(IVRInput.Button.PrimaryTouchpad);
 			displayState.TriggerButton = IVRInput.Get(IVRInput.Button.PrimaryIndexTrigger);
 			displayState.touching = !displayState.clickButton && IVRInput.Get(IVRInput.Touch.PrimaryTouchpad);

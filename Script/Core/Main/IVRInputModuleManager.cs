@@ -57,15 +57,7 @@ namespace IDEALENS.IVR.EventSystems
 			set{ 
 				handlerButton2CommonClick = value;
 
-				IVRInput.Button buttons = IVRInput.Button.None;
-				if ((handlerButton2CommonClick & ButtonCommon.CONTROLLER_BUTTON_TP_CLICK) !=0)
-					buttons |= IVRInput.Button.PrimaryTouchpad;
-				if ((handlerButton2CommonClick & ButtonCommon.CONTROLLER_BUTTON_TRIGGER) != 0)
-					buttons |= IVRInput.Button.PrimaryIndexTrigger;
-
-				IVRBridge.HandButtons = buttons;
-				if (inputModule != null)
-					inputModule.Impl.HandButtons = IVRBridge.HandButtons;
+				SetHandlerDefaultButton (handlerButton2CommonClick);
 			}
 		}
 
@@ -138,7 +130,7 @@ namespace IDEALENS.IVR.EventSystems
 			}
 				
 
-			// 是否自动生成EventSystem
+			// Auto Generate EventSystem?
 			if (bAutoGenerateEventSystem) {
 
 				// Get EventSystem
@@ -179,7 +171,7 @@ namespace IDEALENS.IVR.EventSystems
 
 			if (inputModule != null) {
 				// set default key for handler
-				inputModule.HandlerButton2CommonClick = HandlerButton2CommonClick;
+				SetHandlerDefaultButton (handlerButton2CommonClick);
 				inputModule.Impl.EnableGazeAutoTriggerMode = EnableGazeTriggerMode;
 			}
 				
@@ -192,7 +184,26 @@ namespace IDEALENS.IVR.EventSystems
 		}
 
 		/// <summary>
-		/// 屏蔽所有InputModule
+		/// Set the handler default button.
+		/// </summary>
+		/// <param name="handlerButton2CommonClick">Handler button2 common click.</param>
+		public void SetHandlerDefaultButton(ButtonCommon handlerButton)
+		{
+			IVRInput.Button buttons = IVRInput.Button.None;
+			if ((handlerButton & ButtonCommon.CONTROLLER_BUTTON_TP_CLICK) !=0)
+				buttons |= IVRInput.Button.PrimaryTouchpad;
+			if ((handlerButton & ButtonCommon.CONTROLLER_BUTTON_TRIGGER) != 0)
+				buttons |= IVRInput.Button.PrimaryIndexTrigger;
+
+			IVRBridge.HandButtons = buttons;
+			if (inputModule != null) {
+				inputModule.HandlerButton2CommonClick = handlerButton;
+				inputModule.Impl.HandButtons = IVRBridge.HandButtons;
+			}
+		}
+
+		/// <summary>
+		/// Disable InputModule
 		/// </summary>
 		private void disableAllInputModule()
 		{
@@ -200,7 +211,7 @@ namespace IDEALENS.IVR.EventSystems
 		}
 
 		/// <summary>
-		/// 是否激活锚点
+		/// Active Anchor?
 		/// </summary>
 		/// <param name="value">If set to <c>true</c> value.</param>
 		private void SetActiveGaze(bool value)

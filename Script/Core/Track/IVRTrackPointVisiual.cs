@@ -13,15 +13,11 @@ using IDEALENS.IVR.InputPlugin;
 namespace IDEALENS.IVR
 {
 	public class IVRTrackPointVisiual : MonoBehaviour {
-
-		public Texture pointerTap;
-		public Texture pointerLoading;
 		private MeshRenderer pointerMesh;
 		private float startTime = 0;
 		// Use this for initialization
 		void Start () {
 			pointerMesh = GetComponent<MeshRenderer>();
-			pointerMesh.material.mainTexture = pointerTap;
 			pointerMesh.material.SetVector("_TintColor", new Vector4(0.5f, 0.5f, 0.5f, 0.5f * 0.8f));
 		}
 		void OnEnable()
@@ -52,20 +48,17 @@ namespace IDEALENS.IVR
 		{
 			if (IVRInput.GetControllerWasRecentered())
 			{
-				pointerMesh.material.mainTexture = pointerTap;
 				pointerMesh.material.SetVector("_TintColor", new Vector4(0.5f, 0.5f, 0.5f, 0.5f * 0.8f));
 			}
 			if (IVRInput.GetDown(IVRInput.Touch.PrimaryTouchpad)
 				|| IVRInput.GetDown(IVRInput.Button.PrimaryIndexTrigger | IVRInput.Button.PrimaryTouchpad | IVRInput.Button.One))
 			{
-				pointerMesh.material.mainTexture = pointerTap;
 				pointerMesh.material.SetVector("_TintColor", new Vector4(0.5f, 0.5f, 0.5f, 0.5f));
 			}
 
 			if (IVRInput.GetUp(IVRInput.Touch.PrimaryTouchpad)
 				|| IVRInput.GetUp(IVRInput.Button.PrimaryIndexTrigger | IVRInput.Button.PrimaryTouchpad | IVRInput.Button.One))
 			{
-				pointerMesh.material.mainTexture = pointerTap;
 				pointerMesh.material.SetVector("_TintColor", new Vector4(0.5f, 0.5f, 0.5f, 0.5f * 0.8f));
 			}
 		}
@@ -89,7 +82,7 @@ namespace IDEALENS.IVR
 			if ((type & ControllerButton.CONTROLLER_BUTTON_APP) == 0) return;
 			if (startTime == 0) return;
 			float time = Time.unscaledTime - startTime - 0.5f;
-			if (time < 0.5f && time > 0)
+			/*if (time < 0.5f && time > 0)
 			{
 				if (pointerMesh.material.mainTexture != pointerLoading)
 				{
@@ -104,7 +97,7 @@ namespace IDEALENS.IVR
 			else if (time > 0.5f)
 			{
 				pointerMesh.material.SetFloat("_FillAmount", 360);
-			}
+			}*/
 		}
 
 		void OnPressUp(ControllerButton type)
@@ -113,7 +106,7 @@ namespace IDEALENS.IVR
 			{
 				startTime = 0;
 			}
-			pointerMesh.material.SetFloat("_FillAmount", 360);
+			//pointerMesh.material.SetFloat("_FillAmount", 360);
 
 		}
 	}

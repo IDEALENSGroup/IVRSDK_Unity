@@ -168,6 +168,7 @@ namespace IDEALENS.IVR
 		void Start()
 		{
 			IVRBridge.OnHandlerConnectService ();
+			TrackPlugin.OnHandlerConnected += OnHandlerConnected;
 		}
 			
 		void Update ()
@@ -178,6 +179,7 @@ namespace IDEALENS.IVR
 		void OnDestroy()
 		{
 			IVRBridge.Dispose ();
+			TrackPlugin.OnHandlerConnected -= OnHandlerConnected;
 		}
 
 
@@ -226,6 +228,7 @@ namespace IDEALENS.IVR
 
 			IVRCam.settings.cpuPerfLevel = SvrManager.SvrSettings.ePerfLevel.Maximum;
 			IVRCam.settings.gpuPerfLevel = SvrManager.SvrSettings.ePerfLevel.Maximum;
+			IVRCam.settings.eyeAntiAliasing = SvrManager.SvrSettings.eAntiAliasing.k4;
 
 			// Unity 2018+
 			if (IVRPlugin.IsUnityVersion_2018Plus ()) {
@@ -238,6 +241,8 @@ namespace IDEALENS.IVR
 
 			// 初始化
 			IVRCam.Init ();
+
+			Debug.Log ("Quality Settings:" + QualitySettings.antiAliasing);
 
 			// 参数配置
 			/*
@@ -265,6 +270,27 @@ namespace IDEALENS.IVR
 			svrManager.settings.foveationMinimum = 0.25f;
 			svrManager.settings.frustumType = SvrManager.SvrSettings.eFrustumType.Device;
 			svrManager.settings.displayType = SvrManager.SvrSettings.eEyeBufferType.StereoSeperate;*/
+		}
+		#endregion
+
+		#region Handler Callback
+		/// <summary>
+		/// 手柄已连接状态
+		/// </summary>
+		private void OnHandlerConnected()
+		{
+			// 连接后重置视角
+			if (IVRPlugin.IsRunningOnAndroidDevice && TrackPlugin.isConnected) {
+
+				StartCoroutine (ResetHandlerDelay ());
+			}
+		}
+		private IEnumerator ResetHandlerDelay()
+		{
+			yield return new WaitForSeconds (0.2f);
+			IVRPlugin.IVR_ResetPose ();
+			TrackPlugin.RecenterTrackingOrigin();
+
 		}
 		#endregion
 
