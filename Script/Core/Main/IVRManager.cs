@@ -231,18 +231,19 @@ namespace IDEALENS.IVR
 			IVRCam.settings.eyeAntiAliasing = SvrManager.SvrSettings.eAntiAliasing.k4;
 
 			// Unity 2018+
-			if (IVRPlugin.IsUnityVersion_2018Plus ()) {
-				IVRCam.settings.vSyncCount = SvrManager.SvrSettings.eVSyncCount.k1;
-			} 
+			//if (IVRPlugin.IsUnityVersion_2018Plus ()) {
+			//	IVRCam.settings.vSyncCount = SvrManager.SvrSettings.eVSyncCount.k1;
+			//} 
 			// Unity 5.6+
-			if (IVRPlugin.IsUnityVersion_56Plus ()) {
-				IVRCam.settings.vSyncCount = SvrManager.SvrSettings.eVSyncCount.k0;
-			}
+			//if (IVRPlugin.IsUnityVersion_56Plus ()) {
+			IVRCam.settings.vSyncCount = SvrManager.SvrSettings.eVSyncCount.k1;
+			//}
 
 			// 初始化
 			IVRCam.Init ();
 
 			Debug.Log ("Quality Settings:" + QualitySettings.antiAliasing);
+			Debug.Log ("SyncCount Settings:" + QualitySettings.vSyncCount);
 
 			// 参数配置
 			/*

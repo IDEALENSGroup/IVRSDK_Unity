@@ -63,7 +63,7 @@ namespace IDEALENS.IVR.Example
 			
 		void OnScroll(Vector2 pos,Vector2 delta)
 		{
-			slider.value +=delta.x;
+			slider.value +=delta.x * 0.5f;
 		}
 	}
 }
