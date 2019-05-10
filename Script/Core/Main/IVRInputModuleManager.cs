@@ -48,8 +48,8 @@ namespace IDEALENS.IVR.EventSystems
 
 		[Tooltip("Use the handler buttons as common click")]
 		[SerializeField, SetProperty("HandlerButton2CommonClick")]
-		private ButtonCommon handlerButton2CommonClick = ButtonCommon.CONTROLLER_BUTTON_TP_CLICK;
-		public ButtonCommon HandlerButton2CommonClick
+		private HandlerTriggerButtonType handlerButton2CommonClick = HandlerTriggerButtonType.Button_TP;
+		public HandlerTriggerButtonType HandlerButton2CommonClick
 		{
 			get{ 
 				return handlerButton2CommonClick;
@@ -187,17 +187,37 @@ namespace IDEALENS.IVR.EventSystems
 		/// Set the handler default button.
 		/// </summary>
 		/// <param name="handlerButton2CommonClick">Handler button2 common click.</param>
-		public void SetHandlerDefaultButton(ButtonCommon handlerButton)
+		public void SetHandlerDefaultButton(HandlerTriggerButtonType handlerButtonType)
 		{
 			IVRInput.Button buttons = IVRInput.Button.None;
-			if ((handlerButton & ButtonCommon.CONTROLLER_BUTTON_TP_CLICK) !=0)
+
+			//if ((handlerButton & ButtonCommon.CONTROLLER_BUTTON_TP_CLICK) !=0)
+			//	buttons |= IVRInput.Button.PrimaryTouchpad;
+			
+			//if ((handlerButton & ButtonCommon.CONTROLLER_BUTTON_TRIGGER) != 0)
+			//	buttons |= IVRInput.Button.PrimaryIndexTrigger;
+
+			//if ((handlerButton & ButtonCommon.CONTROLLER_BUTTON_TRIGGER_AND_TP) != 0) {
+			//	buttons |= IVRInput.Button.PrimaryTouchpad;
+			//	buttons |= IVRInput.Button.PrimaryIndexTrigger;
+			//}
+
+			switch (handlerButtonType) {
+			case HandlerTriggerButtonType.Button_TP:
 				buttons |= IVRInput.Button.PrimaryTouchpad;
-			if ((handlerButton & ButtonCommon.CONTROLLER_BUTTON_TRIGGER) != 0)
+				break;
+			case HandlerTriggerButtonType.Button_Trigger:
 				buttons |= IVRInput.Button.PrimaryIndexTrigger;
+				break;
+			case HandlerTriggerButtonType.Button_TPAndTrigger:
+				buttons |= IVRInput.Button.PrimaryTouchpad;
+				buttons |= IVRInput.Button.PrimaryIndexTrigger;
+				break;
+			}
 
 			IVRBridge.HandButtons = buttons;
 			if (inputModule != null) {
-				inputModule.HandlerButton2CommonClick = handlerButton;
+				inputModule.handlerTriggerButtonType = handlerButtonType;
 				inputModule.Impl.HandButtons = IVRBridge.HandButtons;
 			}
 		}

@@ -27,7 +27,10 @@ namespace IDEALENS.IVR.Example
 
 		void OnBackCallback()
 		{
-			SceneManager.LoadScene (backSceneName);
+			IVRManager.Instance.SetFadeOutAction (() => {
+				SceneManager.LoadScene (backSceneName);
+			});
+
 		}
 
 	

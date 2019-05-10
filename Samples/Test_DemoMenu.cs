@@ -64,7 +64,8 @@ namespace IDEALENS.IVR.Example
 
 		void OnBack()
 		{
-            Application.Quit();
+			IVRManager.Instance.IVR_ApplicationQuit();
+            //Application.Quit();
 		}
 
 		public void ClickToScene(Test_ButtonAndTip buttonTip)

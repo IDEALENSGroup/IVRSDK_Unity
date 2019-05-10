@@ -158,25 +158,29 @@ public class SvrManager : MonoBehaviour
         [Tooltip("Display buffer type (default stereo seperate)")]
         public eEyeBufferType displayType = eEyeBufferType.StereoSeperate;
     }
-	[HideInInspector]
-    [SerializeField]
+	[HideInInspector]    
+	[SerializeField]
     public SvrSettings settings;
 
     [Serializable]
     public class SvrStatus
     {
-		[HideInInspector]
-        [Tooltip("SnapdragonVR SDK Initialized")]
+
+		[HideInInspector]        
+		[Tooltip("SnapdragonVR SDK Initialized")]
         public bool initialized = false;
-		[HideInInspector]
-        [Tooltip("SnapdragonVR SDK Running")]
+
+		[HideInInspector]        
+		[Tooltip("SnapdragonVR SDK Running")]
         public bool running = false;
-		[HideInInspector]
-        [Tooltip("SnapdragonVR SDK Pose Status: 0/None, 1/Rotation, 2/Position, 3/RotationAndPosition")]
+
+		[HideInInspector]        
+		[Tooltip("SnapdragonVR SDK Pose Status: 0/None, 1/Rotation, 2/Position, 3/RotationAndPosition")]
         public int pose = 0;
     }
-	[HideInInspector]
-    [SerializeField]
+
+	[HideInInspector]    
+	[SerializeField]
     public SvrStatus status;
 
     public enum eFadeState { FadeIn, FadeOut }
@@ -186,26 +190,26 @@ public class SvrManager : MonoBehaviour
     public float fadeDuration = .5f;
 
     [Header("Camera Rig")]
-	[HideInInspector]
-    public Transform head;
-	[HideInInspector]
-    public Transform gaze;
-	[HideInInspector]
-    public Camera monoCamera;
-	[HideInInspector]
-    public Camera leftCamera;
-	[HideInInspector]
-    public Camera rightCamera;
-	[HideInInspector]
-    public Camera leftOverlay;
-	[HideInInspector]
-    public Camera rightOverlay;
-	[HideInInspector]
-    public Camera monoOverlay;
-	[HideInInspector]
-    public SvrOverlay fadeOverlay;
-	[HideInInspector]
-    public SvrOverlay reticleOverlay;
+	[HideInInspector]    
+	public Transform head;
+	[HideInInspector]    
+	public Transform gaze;
+	[HideInInspector]    
+	public Camera monoCamera;
+	[HideInInspector]    
+	public Camera leftCamera;
+	[HideInInspector]    
+	public Camera rightCamera;
+	[HideInInspector]    
+	public Camera leftOverlay;
+	[HideInInspector]    
+	public Camera rightOverlay;
+	[HideInInspector]    
+	public Camera monoOverlay;
+	[HideInInspector]    
+	public SvrOverlay fadeOverlay;
+	[HideInInspector]   
+	public SvrOverlay reticleOverlay;
 
 
     public Vector2 FocalPoint { get; set; } // Foveated Rendering Focal Point
@@ -294,6 +298,7 @@ public class SvrManager : MonoBehaviour
 
 	public void Init()
 	{
+		Debug.Log("SvrManager.Awake()");
 		if (!ValidateReferencedComponents ())
 		{
 			enabled = false;
@@ -346,6 +351,7 @@ public class SvrManager : MonoBehaviour
 #if UNITY_2018
     void OnEnable()
     {
+		Debug.Log("SvrManager.OnEnable()");
         if (UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset)
         {
             UnityEngine.Experimental.Rendering.RenderPipeline.beginCameraRendering += OnPreRender;
@@ -354,6 +360,7 @@ public class SvrManager : MonoBehaviour
 
     void OnDisable()
     {
+		Debug.Log("SvrManager.OnDisable()");
         if (UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset)
         {
             UnityEngine.Experimental.Rendering.RenderPipeline.beginCameraRendering -= OnPreRender;
@@ -367,10 +374,11 @@ public class SvrManager : MonoBehaviour
 #endif
     IEnumerator Start ()
 	{
+		Debug.Log("SvrManager.Start()");
 		yield return StartCoroutine(Initialize());
         status.initialized = plugin.IsInitialized();
 
-        SetOverlayFade(eFadeState.FadeIn);
+        //SetOverlayFade(eFadeState.FadeIn);
 
         yield return StartCoroutine(plugin.BeginVr((int)settings.cpuPerfLevel, (int)settings.gpuPerfLevel));
 
@@ -390,6 +398,7 @@ public class SvrManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(sensorWarmupDuration);
 
+		if (submitFrame != null) { StopCoroutine(submitFrame); submitFrame = null; }
         submitFrame = StartCoroutine(SubmitFrame());
 
         status.running = true;
@@ -399,6 +408,7 @@ public class SvrManager : MonoBehaviour
 
 	IEnumerator Initialize()
 	{
+		Debug.Log("SvrManager.Initialize()");
 		// Plugin must be initialized OnStart in order to properly
 		// get a valid surface
         GameObject mainCameraGo = GameObject.FindWithTag("MainCamera");
@@ -651,8 +661,8 @@ public class SvrManager : MonoBehaviour
     {
         if (fadeOverlay == null) return;
 
-        fadeAlpha = rate > 0 ? Mathf.MoveTowards(fadeAlpha, targetAlpha, rate) : targetAlpha;
-
+       fadeAlpha = rate > 0 ? Mathf.MoveTowards(fadeAlpha, targetAlpha, rate) : targetAlpha;
+		//fadeAlpha = Mathf.MoveTowards(fadeAlpha, targetAlpha, rate);
         var fadeTexture = fadeOverlay.imageTexture as Texture2D;
         if (fadeTexture != null)
         {
@@ -674,6 +684,7 @@ public class SvrManager : MonoBehaviour
 
     IEnumerator SubmitFrame ()
 	{
+		Debug.Log("SvrManager.SubmitFrame()");
         Vector3 frustumSize = Vector3.zero;
         frustumSize.x = 0.5f * (plugin.deviceInfo.targetFrustumLeft.right - plugin.deviceInfo.targetFrustumLeft.left);
         frustumSize.y = 0.5f * (plugin.deviceInfo.targetFrustumLeft.top - plugin.deviceInfo.targetFrustumLeft.bottom);
@@ -775,14 +786,15 @@ public class SvrManager : MonoBehaviour
 
     public void SetPause(bool pause)
 	{
+		Debug.LogFormat("SvrManager.SetPause({0}) ,Initialized =({1}) ,IsRunning=({2}),onResume = {3},",pause,Initialized,IsRunning,onResume);
         if (!Initialized)
 			return;
 
-        if (pause && IsRunning)
+        if (pause )//&& IsRunning
 		{
 			OnPause();
 		}
-        else if (onResume == null && IsRunning == false)
+        else// if (onResume == null && IsRunning == false && pause == false)
         {
             onResume = StartCoroutine(OnResume());
 		}
@@ -790,7 +802,7 @@ public class SvrManager : MonoBehaviour
 
     void OnPause()
 	{
-        //Debug.Log("SvrManager.OnPause()");
+        Debug.Log("SvrManager.OnPause()");
 
         status.running = false;
 
@@ -802,9 +814,9 @@ public class SvrManager : MonoBehaviour
 
     IEnumerator OnResume()
 	{
-        //Debug.Log("SvrManager.OnResume()");
+        Debug.Log("SvrManager.OnResume()");
 
-        SetOverlayFade(eFadeState.FadeIn);
+        //SetOverlayFade(eFadeState.FadeIn);
 
         yield return StartCoroutine(plugin.BeginVr((int)settings.cpuPerfLevel, (int)settings.gpuPerfLevel));
 
@@ -817,6 +829,7 @@ public class SvrManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(sensorWarmupDuration);
 
+		if (submitFrame != null) { StopCoroutine(submitFrame); submitFrame = null; }
 		submitFrame = StartCoroutine (SubmitFrame ());
 
         status.running = plugin.IsRunning();
@@ -949,7 +962,7 @@ public class SvrManager : MonoBehaviour
 
     public void Shutdown()
 	{
-        //Debug.Log("SvrManager.Shutdown()");
+        Debug.Log("SvrManager.Shutdown()");
 
         status.running = false;
 
@@ -964,7 +977,7 @@ public class SvrManager : MonoBehaviour
 
     void OnDestroy()
     {
-        //Debug.Log("SvrManager.OnDestroy()");
+        Debug.Log("SvrManager.OnDestroy()");
 
         UnregisterListeners();
 
@@ -980,7 +993,7 @@ public class SvrManager : MonoBehaviour
 
 	void OnApplicationQuit()
 	{
-        //Debug.Log("SvrManager.OnApplicationQuit()");
+        Debug.Log("SvrManager.OnApplicationQuit()");
 
         Shutdown();
 	}

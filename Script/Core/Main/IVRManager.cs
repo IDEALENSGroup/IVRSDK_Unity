@@ -215,6 +215,8 @@ namespace IDEALENS.IVR
 		#region SnapdragonVR
 		private void ConfigureSnapdragonVR ()
 		{
+			IVRCam.fadeDuration = 0.3f;
+
 			IVRCam.head = head;
 			IVRCam.gaze = gaze;
 			IVRCam.monoCamera = monoCamera;
@@ -229,6 +231,7 @@ namespace IDEALENS.IVR
 			IVRCam.settings.cpuPerfLevel = SvrManager.SvrSettings.ePerfLevel.Maximum;
 			IVRCam.settings.gpuPerfLevel = SvrManager.SvrSettings.ePerfLevel.Maximum;
 			IVRCam.settings.eyeAntiAliasing = SvrManager.SvrSettings.eAntiAliasing.k4;
+			IVRCam.settings.frustumType = SvrManager.SvrSettings.eFrustumType.Device;
 
 			// Unity 2018+
 			//if (IVRPlugin.IsUnityVersion_2018Plus ()) {
@@ -308,8 +311,10 @@ namespace IDEALENS.IVR
 		/// <summary>
 		/// Open/Close Overlay Mode(该模式开启后可以解决锚点抖动的问题)
 		/// </summary>
+		private bool isEnableOverlayMode = false;
 		public void EnableOverlayMode (bool isEnable)
 		{
+			isEnableOverlayMode = isEnable;
 			if (isEnable) {
 
 				monoCamera.gameObject.SetActive (false);
@@ -363,7 +368,7 @@ namespace IDEALENS.IVR
 		{
 			leftCamera.cullingMask = -1;
 			rightCamera.cullingMask = -1;
-			EnableOverlayMode (true);
+			EnableOverlayMode (isEnableOverlayMode);
 		}
 
 		/// <summary>
@@ -418,6 +423,60 @@ namespace IDEALENS.IVR
 		void OnApplicationQuit()
 		{
 			IVRBridge.OnHandlerDisconnectService ();
+		}
+		#endregion
+
+		#region Fade Quit(Recommand to Quit)
+		private bool isAppQuit = false;
+		public void IVR_ApplicationQuit()
+		{
+			if (isAppQuit)
+				return;
+			StartCoroutine (_IVR_ApplicationQuit ());
+		}
+		IEnumerator _IVR_ApplicationQuit()
+		{
+			isAppQuit = true;
+			SvrManager.Instance.SetOverlayFade(SvrManager.eFadeState.FadeOut);
+			yield return new WaitUntil(() => SvrManager.Instance.IsOverlayFading() == false);
+			Debug.Log ("IVR_ApplicationQuit");
+			isAppQuit = false;
+			Application.Quit ();
+		}
+		#endregion
+
+		#region Fade In and Action
+		private bool isFadeInAction = false;
+		public void SetFadeInAction(Action action = null){
+			if (isFadeInAction)
+				return;
+			StartCoroutine (_SetFadeInAction (action));
+		}
+		IEnumerator _SetFadeInAction(Action action)
+		{
+			isFadeInAction = true;
+			SvrManager.Instance.SetOverlayFade(SvrManager.eFadeState.FadeIn);
+			yield return new WaitUntil(() => SvrManager.Instance.IsOverlayFading() == true);
+			if (action != null)
+				action ();
+			isFadeInAction = false;
+		}
+		#endregion
+
+		#region Fade Out and Action
+		private bool isFadeInOut = false;
+		public void SetFadeOutAction(Action action = null)
+		{
+			StartCoroutine (_SetFadeOutAction (action));
+		}
+		IEnumerator _SetFadeOutAction(Action action)
+		{
+			isFadeInOut = true;
+			SvrManager.Instance.SetOverlayFade(SvrManager.eFadeState.FadeOut);
+			yield return new WaitUntil(() => SvrManager.Instance.IsOverlayFading() == false);
+			if (action != null)
+				action ();
+			isFadeInOut = false;
 		}
 		#endregion
 

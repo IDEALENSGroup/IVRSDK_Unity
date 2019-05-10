@@ -17,6 +17,7 @@ namespace IDEALENS.IVR.Tool
 
 		public Text label_fps;
 		public Text _orientationText;
+		public Text _eulerText;
 		public Text _positionText;
 
 		private float _framesPerSecond = 0;
@@ -50,10 +51,14 @@ namespace IDEALENS.IVR.Tool
 			//transform.rotation = headTransform.rotation;
 
 			Quaternion orientation = headTransform.localRotation;
+			Vector3 rotation = orientation.eulerAngles;
 			if (_orientationText != null && _orientationText.isActiveAndEnabled)
 			{
+				_eulerText.text = string.Format("{0:F2}, {1:F2}, {2:F2}", rotation.x, rotation.y, rotation.z);
 				_orientationText.text = string.Format("{0:F2}, {1:F2}, {2:F2}, {3:F2}", orientation.x, orientation.y, orientation.z, orientation.w);
+
 				_orientationText.color = (svrManager.status.pose & (int)SvrPlugin.TrackingMode.kTrackingOrientation) == 0 ? Color.red : Color.green;
+				_eulerText.color = _orientationText.color;
 			}
 
 			Vector3 position = headTransform.localPosition;
