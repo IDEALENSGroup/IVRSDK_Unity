@@ -31,6 +31,11 @@ namespace IDEALENS.IVR.Example
 
 		public GameObject obj_touchPointer;
 
+		private Coroutine coroutine_resetSwip = null;
+		private Coroutine coroutine_resetSingleTap = null;
+		private Coroutine coroutine_resetDoubleTap = null;
+		private Coroutine coroutine_resetLongPress = null;
+
 		// Use this for initialization
 		void Start () {
 
@@ -102,8 +107,9 @@ namespace IDEALENS.IVR.Example
 			text_singleTapTip.text = "Single Tap: True";
 			Debug.Log ("Single Tap!");
 
-			StopCoroutine ("_resetSingleTapText");
-			StartCoroutine (_resetSingleTapText ());
+			if(coroutine_resetSingleTap!=null)
+				StopCoroutine (coroutine_resetSingleTap);
+			coroutine_resetSingleTap = StartCoroutine (_resetSingleTapText ());
 		}
 
 		void OnTestDoubleTap()
@@ -111,8 +117,9 @@ namespace IDEALENS.IVR.Example
 			text_doubleTapTip.text = "Double Tap: True";
 			Debug.Log ("Double Tap!");
 
-			StopCoroutine ("_resetDoubleTapText");
-			StartCoroutine (_resetDoubleTapText ());
+			if(coroutine_resetDoubleTap!=null)
+				StopCoroutine (coroutine_resetDoubleTap);
+			coroutine_resetDoubleTap = StartCoroutine (_resetDoubleTapText ());
 		}
 
 		void OnTestSwip(SwipEnum swip)
@@ -134,8 +141,9 @@ namespace IDEALENS.IVR.Example
 			}
 			Debug.Log (swip);
 
-			StopCoroutine ("_resetSwipText");
-			StartCoroutine (_resetSwipText ());
+			if(coroutine_resetSwip!=null)
+				StopCoroutine (coroutine_resetSwip);
+			coroutine_resetSwip = StartCoroutine (_resetSwipText ());
 		}
 
 		void OnTestLongPress()
@@ -143,8 +151,9 @@ namespace IDEALENS.IVR.Example
 			text_longPressTapTip.text = "LongPress: True";
 			Debug.Log ("LongPress");
 
-			StopCoroutine ("_resetLongPressTapText");
-			StartCoroutine (_resetLongPressTapText ());
+			if(coroutine_resetLongPress!=null)
+				StopCoroutine (coroutine_resetLongPress);
+			coroutine_resetLongPress = StartCoroutine (_resetLongPressTapText ());
 		}
 
 		void OnBackPress()
@@ -173,6 +182,7 @@ namespace IDEALENS.IVR.Example
 			
 
 		#region IEnumerator
+
 		IEnumerator _resetSwipText()
 		{
 			yield return new WaitForSeconds (1.5f);

@@ -19,7 +19,7 @@ namespace IDEALENS.IVR.Editor
 			[NonSerialized]
 			public DateTime publishedDateTime;
 			[NonSerialized]
-			public List<string> changelogPages;
+			public string changelogContent;
 
 			#pragma warning disable 649
 			public string html_url;
@@ -29,6 +29,14 @@ namespace IDEALENS.IVR.Editor
 			public string zipball_url;
 			public string body;
 			#pragma warning restore 649
+
+
+			public static string NoHtml(string html)
+			{
+				string StrNohtml = System.Text.RegularExpressions.Regex.Replace(html, "<[^>]+>", "");
+				StrNohtml = System.Text.RegularExpressions.Regex.Replace(StrNohtml, "&[^;]+;", "");
+				return StrNohtml;
+			}
 
 			public static LatestRelease CreateFromJSON(string json)
 			{
@@ -50,13 +58,15 @@ namespace IDEALENS.IVR.Editor
 					)
 				);
 				changelog = changelog.Replace("  *", "*");
+				changelog = NoHtml (changelog);
 
+				latestRelease.changelogContent = changelog;
 				// Each char gets turned into two triangles and the mesh vertices limit is 2^16.
 				// Let's use another 100 to be on the safe side.
-				const int textLengthLimit = 65536 / 4 - 100;
-				latestRelease.changelogPages = new List<string>((int)Mathf.Ceil(changelog.Length / (float)textLengthLimit));
+				//const int textLengthLimit = 65536 / 3 - 100;
+				//latestRelease.changelogPages = new List<string>((int)Mathf.Ceil(changelog.Length / (float)textLengthLimit));
 
-				while (changelog.Length > 0)
+				/*while (changelog.Length > 0)
 				{
 					int lastIndexOf = changelog.LastIndexOf("\n", Math.Min(changelog.Length, textLengthLimit), StringComparison.Ordinal);
 					if (lastIndexOf == -1)
@@ -66,7 +76,7 @@ namespace IDEALENS.IVR.Editor
 
 					latestRelease.changelogPages.Add(changelog.Substring(0, lastIndexOf));
 					changelog = changelog.Substring(lastIndexOf).TrimStart('\n', '\r');
-				}
+				}*/
 
 				return latestRelease;
 			}
@@ -97,9 +107,9 @@ namespace IDEALENS.IVR.Editor
 
 		public void OnGUI()
 		{
-			using (GUILayout.ScrollViewScope scrollViewScope = new GUILayout.ScrollViewScope(scrollPosition))
-			{
-				scrollPosition = scrollViewScope.scrollPosition;
+			//using (GUILayout.ScrollViewScope scrollViewScope = new GUILayout.ScrollViewScope(scrollPosition))
+			//{
+				//scrollPosition = scrollViewScope.scrollPosition;
 
 				if (versionResource != null && !versionResource.isDone)
 				{
@@ -133,45 +143,19 @@ namespace IDEALENS.IVR.Editor
 				DrawCheckAgainButton();
 
 				isChangelogFoldOut = EditorGUILayout.Foldout(isChangelogFoldOut, "Changelog", true);
+
+				Vector2 scroll = Vector2.zero;
 				if (isChangelogFoldOut)
 				{
 					using (new EditorGUILayout.HorizontalScope())
 					{
 						GUILayout.Space(10);
 
+
+
 						using (new EditorGUILayout.VerticalScope())
 						{
-							IVRSDK_EditorUtilities.DrawScrollableSelectableLabel(
-								ref changelogScrollPosition,
-								ref changelogWidth,
-								latestRelease.changelogPages[changelogPageIndex],
-								new GUIStyle(EditorStyles.textArea)
-								{
-									richText = true
-								});
-
-							if (latestRelease.changelogPages.Count > 0)
-							{
-								using (new EditorGUILayout.HorizontalScope())
-								{
-									using (new EditorGUI.DisabledGroupScope(changelogPageIndex == 0))
-									{
-										if (GUILayout.Button("Previous Page"))
-										{
-											changelogPageIndex = Math.Max(0, --changelogPageIndex);
-											changelogScrollPosition = Vector3.zero;
-										}
-									}
-									using (new EditorGUI.DisabledGroupScope(changelogPageIndex == latestRelease.changelogPages.Count - 1))
-									{
-										if (GUILayout.Button("Next Page"))
-										{
-											changelogPageIndex = Math.Min(latestRelease.changelogPages.Count - 1, ++changelogPageIndex);
-											changelogScrollPosition = Vector3.zero;
-										}
-									}
-								}
-							}
+							EditorGUILayout.HelpBox(latestRelease.changelogContent,MessageType.None,true);
 
 							if (GUILayout.Button("View on GitHub"))
 							{
@@ -221,7 +205,7 @@ namespace IDEALENS.IVR.Editor
 						}
 					}
 				}
-			}
+			//}
 		}
 
 		private static void DrawCheckAgainButton()

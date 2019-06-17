@@ -1,4 +1,6 @@
-﻿namespace IDEALENS.IVR.Editor
+﻿using UnityEditor.Graphs;
+
+namespace IDEALENS.IVR.Editor
 {
     using UnityEngine;
     using UnityEditor;
@@ -58,8 +60,9 @@
             {
                 scrollPosition = scrollViewScope.scrollPosition;
 
-                float textHeight = style.CalcHeight(new GUIContent(text), width);
-                EditorGUILayout.SelectableLabel(text, style, GUILayout.MinHeight(textHeight));
+				//string noHtmlString = NoHtml (text);
+				float textHeight = style.CalcHeight(new GUIContent(text), width);
+				EditorGUILayout.SelectableLabel(text, style, GUILayout.MinHeight(textHeight));
 
                 if (Event.current.type == EventType.Repaint)
                 {
@@ -67,5 +70,12 @@
                 }
             }
         }
+
+		public static string NoHtml(string html)
+		{
+			string StrNohtml = System.Text.RegularExpressions.Regex.Replace(html, "<[^>]+>", "");
+			StrNohtml = System.Text.RegularExpressions.Regex.Replace(StrNohtml, "&[^;]+;", "");
+			return StrNohtml;
+		}
     }
 }

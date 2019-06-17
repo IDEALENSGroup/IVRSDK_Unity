@@ -51,6 +51,7 @@ public class SvrManager : MonoBehaviour
     { 
         public enum eAntiAliasing
         {
+			K0 = 0,
             k1 = 1,
             k2 = 2,
             k4 = 4,
@@ -1059,6 +1060,7 @@ public class SvrManager : MonoBehaviour
 
     void OnEyeAntiAliasingChanged(SvrOverrideSettings.eAntiAliasing antiAliasing)
     {
+		Debug.Log ("sdfsdfds:"+antiAliasing);
         foreach (SvrEye eye in eyes)
         {
             eye.AntiAliasing = antiAliasing == SvrOverrideSettings.eAntiAliasing.NoOverride ? 

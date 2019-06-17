@@ -18,7 +18,6 @@ namespace IDEALENS.IVR.Example
 {
 	public class Test_GazeObject : MonoBehaviour,
                                                 IPointerHoverHandler,
-                                                IPointerTouchSwipHandler,
                                                 IPointerClickHandler,
                                                 IPointerEnterHandler,
                                                 IPointerExitHandler,
@@ -66,11 +65,6 @@ namespace IDEALENS.IVR.Example
 			StopCoroutine ("Rotation");
 			Debug.Log (gameObject.name + " OnPointerExit");
 		}
-
-		public void OnPointerTouchSwip(PointerEventData eventData)
-        {
-            Debug.Log(gameObject.name + " OnPointerTouchSwip");
-        }
 
         #region Drag
 		public void OnEndDrag(PointerEventData eventData)

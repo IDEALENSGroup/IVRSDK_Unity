@@ -20,6 +20,7 @@ namespace IDEALENS.IVR
 	/// IVR manager.
 	/// tansir
 	/// </summary>
+	///
 
 	public class IVRManager : MonoBehaviour
 	{
@@ -72,6 +73,8 @@ namespace IDEALENS.IVR
 		[Tooltip ("Do not Destroy this object,default 'false'")]
 		public bool dontDestroy = false;
 
+		[Tooltip ("AntiAliasing Quality,default 'k4(best)'")]
+		public SvrManager.SvrSettings.eAntiAliasing antiAliasingQualcomm =  SvrManager.SvrSettings.eAntiAliasing.k4;
 
 		/// <summary>
 		/// CameraRig
@@ -230,8 +233,17 @@ namespace IDEALENS.IVR
 
 			IVRCam.settings.cpuPerfLevel = SvrManager.SvrSettings.ePerfLevel.Maximum;
 			IVRCam.settings.gpuPerfLevel = SvrManager.SvrSettings.ePerfLevel.Maximum;
-			IVRCam.settings.eyeAntiAliasing = SvrManager.SvrSettings.eAntiAliasing.k4;
 			IVRCam.settings.frustumType = SvrManager.SvrSettings.eFrustumType.Device;
+			IVRCam.settings.eyeAntiAliasing = antiAliasingQualcomm;
+
+			// AniAliasing Settings
+ 			/*if (antiAliasingSolution == AntiAliasingSolution.Unity) {
+				Debug.Log ("Unity Quality Settings:" + QualitySettings.antiAliasing);
+			} else if (antiAliasingSolution == AntiAliasingSolution.Qualcomm) {
+				
+			}*/
+
+
 
 			// Unity 2018+
 			//if (IVRPlugin.IsUnityVersion_2018Plus ()) {
@@ -244,8 +256,8 @@ namespace IDEALENS.IVR
 
 			// 初始化
 			IVRCam.Init ();
-
-			Debug.Log ("Quality Settings:" + QualitySettings.antiAliasing);
+			Debug.Log ("Unity Quality Settings:" + QualitySettings.antiAliasing);
+			Debug.Log ("Qualcomm Quality Settings:" + antiAliasingQualcomm);
 			Debug.Log ("SyncCount Settings:" + QualitySettings.vSyncCount);
 
 			// 参数配置

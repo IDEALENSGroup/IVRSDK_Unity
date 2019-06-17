@@ -22,6 +22,7 @@ namespace IDEALENS.IVR.Editor
 		SerializedProperty VRPlatform;
 		SerializedProperty VRCameraEyeMode;
 		SerializedProperty dontDestroy;
+		SerializedProperty antiAliasingQualcomm;
 		//SerializedProperty enableOverlayMode;
 		SerializedProperty enableResetPosition;
 
@@ -63,6 +64,8 @@ namespace IDEALENS.IVR.Editor
 			VRPlatform = serializedObject.FindProperty ("VRPlatform");
 			VRCameraEyeMode = serializedObject.FindProperty ("VRCameraEyeMode");
 			dontDestroy = serializedObject.FindProperty ("dontDestroy");
+
+			antiAliasingQualcomm = serializedObject.FindProperty ("antiAliasingQualcomm");
 			//enableOverlayMode = serializedObject.FindProperty ("enableOverlayMode");
 			enableResetPosition = serializedObject.FindProperty ("enableResetPosition");
 
@@ -121,6 +124,8 @@ namespace IDEALENS.IVR.Editor
 				//EditorGUILayout.PropertyField (enableOverlayMode,new GUIContent("Overlay Mode"));
 				EditorGUILayout.PropertyField (enableResetPosition, new GUIContent ("Recenter Tracking"));
 				EditorGUILayout.PropertyField (dontDestroy, new GUIContent ("Do not Destroy Me"));
+
+				EditorGUILayout.PropertyField (antiAliasingQualcomm, new GUIContent ("AntiAliasing Quality"));
 				GUILayout.EndVertical ();
 			}
 
