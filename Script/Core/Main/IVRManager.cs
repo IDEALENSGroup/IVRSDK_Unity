@@ -251,7 +251,7 @@ namespace IDEALENS.IVR
 			//} 
 			// Unity 5.6+
 			//if (IVRPlugin.IsUnityVersion_56Plus ()) {
-			IVRCam.settings.vSyncCount = SvrManager.SvrSettings.eVSyncCount.k1;
+			IVRCam.settings.vSyncCount = SvrManager.SvrSettings.eVSyncCount.k0;
 			//}
 
 			// 初始化

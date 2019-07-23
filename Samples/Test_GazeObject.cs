@@ -86,7 +86,7 @@ namespace IDEALENS.IVR.Example
 
 		public void OnDrag(PointerEventData eventData)
         {
-            Debug.Log(gameObject.name + " OnPointerDragging");
+            //Debug.Log(gameObject.name + " OnPointerDragging");
         }
         #endregion
     }

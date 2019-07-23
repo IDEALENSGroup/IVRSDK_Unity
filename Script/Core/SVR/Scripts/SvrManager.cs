@@ -644,7 +644,7 @@ public class SvrManager : MonoBehaviour
             overlay.Initialize();
         }
     }
-
+		
     public void SetOverlayFade(eFadeState fadeValue)
     {
         fadeState = fadeValue;
@@ -662,12 +662,29 @@ public class SvrManager : MonoBehaviour
     {
         if (fadeOverlay == null) return;
 
-       fadeAlpha = rate > 0 ? Mathf.MoveTowards(fadeAlpha, targetAlpha, rate) : targetAlpha;
+        fadeAlpha = rate > 0 ? Mathf.MoveTowards(fadeAlpha, targetAlpha, rate) : targetAlpha;
+
+		if (!(fadeAlpha > 0.0f)) {
+			return;
+		}
+
 		//fadeAlpha = Mathf.MoveTowards(fadeAlpha, targetAlpha, rate);
         var fadeTexture = fadeOverlay.imageTexture as Texture2D;
         if (fadeTexture != null)
         {
-            var fadeColors = fadeTexture.GetPixels();
+			// may not cause GC,but high cpu
+			/* for (int i = 0; i < fadeTexture.width; i++) {
+				for (int j = 0; j < fadeTexture.height; j++) {
+					Color color = fadeTexture.GetPixel (i, j);
+					color.a = fadeAlpha;
+					fadeTexture.SetPixel(color);
+				}
+			}
+			fadeTexture.Apply(false);
+			*/
+
+			//cause GC,lower cpu
+			Color[] fadeColors = fadeTexture.GetPixels();
             for (int i = 0; i < fadeColors.Length; ++i)
             {
                 fadeColors[i].a = fadeAlpha;
