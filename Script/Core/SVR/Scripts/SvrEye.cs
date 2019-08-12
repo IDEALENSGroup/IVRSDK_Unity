@@ -200,7 +200,7 @@ public class SvrEye : MonoBehaviour, IComparable<SvrEye>
                     eyeTextures[i].antiAliasing = antiAliasing;
                     eyeTextures[i].Create();
                     eyeTextureIds[i] = eyeTextures[i].GetNativeTexturePtr().ToInt32();
-                    Debug.Log("Create Render Texture with ID: " + eyeTextureIds[i] + " Width: " + eyeTextures[i].width + " Height: " + eyeTextures[i].height + " AA: " + eyeTextures[i].antiAliasing);
+                    //Debug.Log("Create Render Texture with ID: " + eyeTextureIds[i] + " Width: " + eyeTextures[i].width + " Height: " + eyeTextures[i].height + " AA: " + eyeTextures[i].antiAliasing);
                     break;
 
                 case eType.StandardTexture:

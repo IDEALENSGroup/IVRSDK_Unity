@@ -52,6 +52,7 @@ namespace IDEALENS.IVR.Example
             IVRTouchPad.TouchEvent_OnSingleTap += OnTestSingleTap;
 			IVRTouchPad.TouchEvent_OnDoubleTap += OnTestDoubleTap;
 			IVRTouchPad.TouchEvent_OnSwipe += OnTestSwip;
+			IVRTouchPad.TouchEvent_OnSwipDirect += OnTestSwipDirect;
 			IVRTouchPad.TouchEvent_OnLongPress += OnTestLongPress;
 			IVRTouchPad.ButtonEvent_OnBackPress += OnBackPress;
 			IVRTouchPad.ButtonEvent_OnAppPress += OnAppPress;
@@ -67,6 +68,7 @@ namespace IDEALENS.IVR.Example
 			IVRTouchPad.TouchEvent_OnSingleTap -= OnTestSingleTap;
 			IVRTouchPad.TouchEvent_OnDoubleTap -= OnTestDoubleTap;
 			IVRTouchPad.TouchEvent_OnSwipe -= OnTestSwip;
+			IVRTouchPad.TouchEvent_OnSwipDirect -= OnTestSwipDirect;
 			IVRTouchPad.TouchEvent_OnLongPress -= OnTestLongPress;
 			IVRTouchPad.ButtonEvent_OnBackPress -= OnBackPress;
 			IVRTouchPad.ButtonEvent_OnAppPress -= OnAppPress;
@@ -122,6 +124,9 @@ namespace IDEALENS.IVR.Example
 			coroutine_resetDoubleTap = StartCoroutine (_resetDoubleTapText ());
 		}
 
+		/// <summary>
+		/// Swip and finger up,this event will be triggered
+		/// </summary>
 		void OnTestSwip(SwipEnum swip)
 		{
 			string strHead = "Swip Direction: ";
@@ -144,6 +149,14 @@ namespace IDEALENS.IVR.Example
 			if(coroutine_resetSwip!=null)
 				StopCoroutine (coroutine_resetSwip);
 			coroutine_resetSwip = StartCoroutine (_resetSwipText ());
+		}
+
+		/// <summary>
+		/// Just swip,this event will be triggered,no need finger up
+		/// </summary>
+		void OnTestSwipDirect(SwipEnum swip)
+		{
+			Debug.Log ("OnTestSwipDirect:"+swip);
 		}
 
 		void OnTestLongPress()

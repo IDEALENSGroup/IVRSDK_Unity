@@ -15,7 +15,7 @@ namespace IDEALENS.IVR
 		const string GLOBAL_LOG_OPEN = "Global_Log_Open";
 		bool isOpenLog = false;
 
-		[MenuItem("IDEALENS/SDK/Settings")]
+		//[MenuItem("IDEALENS/SDK/Settings")]
 		static void Init()
 		{
 

@@ -34,7 +34,7 @@ namespace IDEALENS.IVR
 				if (instance == null)
 					instance = FindObjectOfType<IVRManager> ();
 				if (instance == null)
-					Debug.LogError ("Instance object component not found");
+					IVRLog.Error ("Instance object component not found");
 				return instance;
 			}
 		}
@@ -109,7 +109,7 @@ namespace IDEALENS.IVR
 			ConfigureSnapdragonVR ();
 
 			// Open Log
-			IVRLog.isLog = IVRSettings.IsDebugMode;
+			//IVRLog.isLog = IVRSettings.IsDebugMode;
 
 			// SvrManager? 
 			SvrManager svrManager = GameObject.FindObjectOfType<SvrManager> ();
@@ -151,7 +151,7 @@ namespace IDEALENS.IVR
 			EnableOverlayMode (true);
 
 			// Get Config and show fps
-			OnFPSState ();
+			OnConfigState();
 
 			if (dontDestroy)
 				DontDestroyOnLoad (gameObject);
@@ -204,14 +204,20 @@ namespace IDEALENS.IVR
 		/// <summary>
 		/// get config file to show fps state 
 		/// </summary>
-		private void OnFPSState()
+		private void OnConfigState()
 		{
-			IVRPlugin.InitConfigFile ();
-			bool isOpenFPS = IVRPlugin.GetConfigFPSState ();
-			//bool isOpenFPS = true;
-			if (isOpenFPS) {
-				GameObject FPSObj = (GameObject)Instantiate (Resources.Load ("Prefabs/DebugFPSCanvas"));
-				FPSObj.transform.parent = head;
+			if (Application.platform == RuntimePlatform.Android) {
+				
+				IVRPlugin.InitConfigFile ();
+
+				bool isOpenFPS = IVRPlugin.GetConfigFPSState ();
+				bool isOpenLog = IVRPlugin.GetConfigLogState ();
+				IVRLog.isLog = isOpenLog;
+
+				if (isOpenFPS) {
+					GameObject FPSObj = (GameObject)Instantiate (Resources.Load ("Prefabs/DebugFPSCanvas"));
+					FPSObj.transform.parent = head;
+				}
 			}
 		}
 
@@ -256,9 +262,9 @@ namespace IDEALENS.IVR
 
 			// 初始化
 			IVRCam.Init ();
-			Debug.Log ("Unity Quality Settings:" + QualitySettings.antiAliasing);
-			Debug.Log ("Qualcomm Quality Settings:" + antiAliasingQualcomm);
-			Debug.Log ("SyncCount Settings:" + QualitySettings.vSyncCount);
+			IVRLog.Info ("Unity Quality Settings:" + QualitySettings.antiAliasing);
+			IVRLog.Info ("Qualcomm Quality Settings:" + antiAliasingQualcomm);
+			IVRLog.Info ("SyncCount Settings:" + QualitySettings.vSyncCount);
 
 			// 参数配置
 			/*
@@ -451,7 +457,7 @@ namespace IDEALENS.IVR
 			isAppQuit = true;
 			SvrManager.Instance.SetOverlayFade(SvrManager.eFadeState.FadeOut);
 			yield return new WaitUntil(() => SvrManager.Instance.IsOverlayFading() == false);
-			Debug.Log ("IVR_ApplicationQuit");
+			IVRLog.Info ("IVR_ApplicationQuit");
 			isAppQuit = false;
 			Application.Quit ();
 		}

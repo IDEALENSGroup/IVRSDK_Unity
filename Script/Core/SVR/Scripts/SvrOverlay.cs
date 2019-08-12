@@ -192,7 +192,7 @@ public class SvrOverlay : MonoBehaviour, IComparable<SvrOverlay>
                     overlayTextures[i].antiAliasing = antiAliasing;
                     overlayTextures[i].Create();
                     overlayTextureIds[i] = overlayTextures[i].GetNativeTexturePtr().ToInt32();
-                    Debug.Log("Create Render Texture with ID: " + overlayTextureIds[i] + " Width: " + overlayTextures[i].width + " Height: " + overlayTextures[i].height + " AA: " + overlayTextures[i].antiAliasing);
+                    //Debug.Log("Create Render Texture with ID: " + overlayTextureIds[i] + " Width: " + overlayTextures[i].width + " Height: " + overlayTextures[i].height + " AA: " + overlayTextures[i].antiAliasing);
                     break;
 
                 case eType.StandardTexture:
