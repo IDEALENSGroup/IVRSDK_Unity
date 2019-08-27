@@ -35,9 +35,9 @@ namespace IDEALENS.IVR
 		public float initScal = 0.07998779f;
 		public float Width = 100;
 		public float Height = 100;
-		private MeshRenderer mRender;
-		private Material mDynamicMat;
-		private int mShaderClipID;
+		public GameObject mReticle;
+		private SvrOverlay[] svrOverlays;
+		//private int mShaderClipID;
 		private Vector3 startforward, startright, startup, startworldpos;
 		private float MaxAngleX, MaxAngleY, LengthAngle;
 		private float mDistance;
@@ -45,7 +45,8 @@ namespace IDEALENS.IVR
 		void Awake()
 		{
 			Instance = this;
-			mRender = GetComponent<MeshRenderer>();
+
+			svrOverlays = mReticle.GetComponents<SvrOverlay> ();
 		}
 		// Use this for initialization
 		protected override void Start()
@@ -55,13 +56,12 @@ namespace IDEALENS.IVR
 			startright = transform.right;
 			startup = transform.up;
 			startworldpos = transform.position;
-			mDynamicMat = mRender.material;
 			mInitLocalPosition = transform.localPosition;
 			mInitLocalScal = transform.localScale;
 			Depth = Mathf.Abs(mInitLocalPosition.z);
 			started = true;
 			//IVRManager.OnResetPos += IVRManager_OnResetPos;
-			mShaderClipID = Shader.PropertyToID("_Offset");
+			//mShaderClipID = Shader.PropertyToID("_Offset");
 
 			MaxAngleX = Vector3.Angle(transform.parent.position - transform.position,
 				transform.parent.position - (transform.position + transform.right * (Width / 2 - transform.localScale.x)));
@@ -74,13 +74,23 @@ namespace IDEALENS.IVR
 
 			overridePointerCamera = IVRManager.Instance.monoCamera;
 		}
+
 		public void Hide()
 		{
-			mRender.enabled = false;
+			if (mReticle != null) {
+				for (int i = 0; i < svrOverlays.Length; i++) {
+					svrOverlays [i].enabled = false;
+				}
+			}
 		}
+
 		public void Show()
 		{
-			mRender.enabled = true;
+			if (mReticle != null) {
+				for (int i = 0; i < svrOverlays.Length; i++) {
+					svrOverlays [i].enabled = true;
+				}
+			}
 		}
 
 		private void IVRManager_OnResetPos()
@@ -97,26 +107,37 @@ namespace IDEALENS.IVR
 		void Update()
 		{
 
-
-
 			Vector3 currentPos = transform.localPosition;
 
 			float scaleDivisor = Vector3.Distance(currentPos, Vector3.zero) / Depth;
 
 			Vector3 targetScale = mInitLocalScal * scaleDivisor;
 			transform.localScale = targetScale;
+
 			Vector3 anchordirection = transform.position - transform.parent.position;
 			Vector3 pUpanchordirection = Vector3.ProjectOnPlane(anchordirection, Vector3.up);
 			float wAngle = Vector3.Angle(pUpanchordirection, startforward);
 			Vector3 pRightanchordirection = Vector3.ProjectOnPlane(anchordirection, Vector3.right);
 			float hAngle = Vector3.Angle(pRightanchordirection, startforward);
 
+			Vector3 headAngle = IVRManager.Instance.head.localEulerAngles;
+			float headAngleY = CheckAngle (headAngle.y);
+			float headAngleX = CheckAngle (headAngle.x);
+
+			if ((headAngleY >= -1*Width && headAngleY <= Width) && (headAngleX >= -1*Height && headAngleX <= Height)) {
+				mReticle.SetActive (true);
+			}else {
+				mReticle.SetActive (false);
+			}
+
+			/*
 			if (hAngle > MaxAngleY || wAngle > MaxAngleX)
 			{
 				//Up or Down
 				//if Up
 				Vector3 pFowrdanchordirection = Vector3.ProjectOnPlane(anchordirection, startforward).normalized;
 				float offsetV = (hAngle - MaxAngleY) / LengthAngle;
+				Debug.Log ("offsetV:"+offsetV);
 
 				Vector4 clipValue = mDynamicMat.GetVector(mShaderClipID);
 				if (pFowrdanchordirection.y > 0)
@@ -139,12 +160,31 @@ namespace IDEALENS.IVR
 					clipValue.z = offseth;
 				}
 				mDynamicMat.SetVector(mShaderClipID, clipValue);
+
 			}
 			if (hAngle <= MaxAngleY && wAngle <= MaxAngleX)
 			{
 				mDynamicMat.SetVector(mShaderClipID, new Vector4(0f, 0, 0, 0));
 			}
+			*/
 
+		}
+
+		public float CheckAngle(float value)  // 将大于180度角进行以负数形式输出
+		{
+			float angle = value - 180;  
+
+			if (angle > 0)
+			{
+				return angle - 180;
+			}
+
+			if (value == 0)
+			{
+				return 0;
+			}
+
+			return angle + 180;
 		}
 
 		[ContextMenu("reset")]

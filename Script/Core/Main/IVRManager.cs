@@ -148,7 +148,7 @@ namespace IDEALENS.IVR
 			EnableCameraMode ();
 
 			// Open Overlay Cameras
-			EnableOverlayMode (true);
+			EnableOverlayMode (false);
 
 			// Get Config and show fps
 			OnConfigState();
