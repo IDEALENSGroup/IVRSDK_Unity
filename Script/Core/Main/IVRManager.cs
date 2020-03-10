@@ -250,15 +250,16 @@ namespace IDEALENS.IVR
 			}*/
 
 
+            // Unity 垂直同步 兼容性
 
 			// Unity 2018+
-			//if (IVRPlugin.IsUnityVersion_2018Plus ()) {
-			//	IVRCam.settings.vSyncCount = SvrManager.SvrSettings.eVSyncCount.k1;
-			//} 
+			if (IVRPlugin.IsUnityVersion_2018Plus ()) {
+				IVRCam.settings.vSyncCount = SvrManager.SvrSettings.eVSyncCount.k1;
+			} 
 			// Unity 5.6+
-			//if (IVRPlugin.IsUnityVersion_56Plus ()) {
-			IVRCam.settings.vSyncCount = SvrManager.SvrSettings.eVSyncCount.k0;
-			//}
+			if (IVRPlugin.IsUnityVersion_56Plus ()) {
+			    IVRCam.settings.vSyncCount = SvrManager.SvrSettings.eVSyncCount.k0;
+			}
 
 			// 初始化
 			IVRCam.Init ();
