@@ -14,8 +14,13 @@ namespace IDEALENS.IVR
 {
 	public class IVR_AnchorDynamic : IVRBasePointer
 	{
+        public bool ShowAnchorByViewport = true;
+        [DrawIf("ShowAnchorByViewport", true)]
+        public float Width = 100;
+        [DrawIf("ShowAnchorByViewport", true)]
+        public float Height = 100;
 
-		public float maxReticleDistance = 20.0f;
+        public float maxReticleDistance = 20.0f;
 
 		private Vector3 mInitLocalPosition;
 		private Vector3 mInitLocalScal;
@@ -33,8 +38,8 @@ namespace IDEALENS.IVR
 		public float depth = 5f;
 		[HideInInspector]
 		public float initScal = 0.07998779f;
-		public float Width = 100;
-		public float Height = 100;
+       
+        
 		public GameObject mReticle;
 		private SvrOverlay[] svrOverlays;
 		//private int mShaderClipID;
@@ -73,7 +78,10 @@ namespace IDEALENS.IVR
 			mMoveLenght = transform.localPosition.z;
 
 			overridePointerCamera = IVRManager.Instance.monoCamera;
-		}
+
+            if(!ShowAnchorByViewport)
+                mReticle.SetActive(true);
+        }
 
 		public void Hide()
 		{
@@ -124,11 +132,18 @@ namespace IDEALENS.IVR
 			float headAngleY = CheckAngle (headAngle.y);
 			float headAngleX = CheckAngle (headAngle.x);
 
-			if ((headAngleY >= -1*Width && headAngleY <= Width) && (headAngleX >= -1*Height && headAngleX <= Height)) {
-				mReticle.SetActive (true);
-			}else {
-				mReticle.SetActive (false);
-			}
+            if (ShowAnchorByViewport)
+            {
+                if ((headAngleY >= -1 * Width && headAngleY <= Width) && (headAngleX >= -1 * Height && headAngleX <= Height))
+                {
+                    mReticle.SetActive(true);
+                }
+                else
+                {
+                    mReticle.SetActive(false);
+                }
+            }
+			
 
 			/*
 			if (hAngle > MaxAngleY || wAngle > MaxAngleX)
